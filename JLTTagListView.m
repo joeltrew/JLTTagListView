@@ -78,6 +78,15 @@
         JLTAddNewTagViewCell *cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifierAdd" forIndexPath:indexPath];
         cell.placeHolder.delegate = self;
         cell.placeHolder.tag = 100;
+        [cell.placeHolder becomeFirstResponder];
+        
+        if (self.baseColor) {
+            cell.placeHolder.tintColor = self.baseColor;
+        }
+        
+        UITextField *textField = (UITextField *)[cell viewWithTag:100];
+        [textField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
+        
         return cell;
     }
     
@@ -141,9 +150,13 @@
             [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.tags.count inSection:0]]];
             [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
             textField.text = @"";
+
+            
+        } else {
+            [textField resignFirstResponder];
         }
     }
-    [textField resignFirstResponder];
+    
     return YES;
 }
 
