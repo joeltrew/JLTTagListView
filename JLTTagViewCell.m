@@ -10,7 +10,6 @@
 
 @implementation JLTTagViewCell
 
-#define tSCGreen [UIColor colorWithRed:0.596 green:0.941 blue:0.043 alpha:1.000]
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -38,12 +37,12 @@
     self.tagName.layer.shadowRadius = 0.2f;
     self.tagName.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
     
-    [self.deleteButton setTitle:@"x" forState:UIControlStateNormal];
+    [self.deleteButton setTitle:@"✕" forState:UIControlStateNormal];
     
     self.deleteButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     self.deleteButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:14];
     [self.deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.deleteButton.frame = CGRectMake(self.tagName.bounds.size.width + 5, 10, 12, 12);
+    self.deleteButton.frame = CGRectMake(self.tagName.bounds.size.width + 3, 0, 25, self.contentView.frame.size.height);
 
     
     self.contentView.layer.borderWidth = 1.0;
