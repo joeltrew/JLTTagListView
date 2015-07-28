@@ -49,6 +49,16 @@
     return self;
 }
 
+- (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags baseColor:(UIColor *)baseColor
+{
+    self = [self initWithFrame:frame];
+    if (self) {
+        self.tags = tags;
+        self.baseColor = baseColor;
+    }
+    return self;
+}
+
 -(void)layoutSubviews
 {
     [super layoutSubviews];
@@ -145,7 +155,9 @@
 {
     //if the user returns on an add new cell then..
     if (textField.tag == 100) {
-        if (![textField.text length] == 0) {
+        NSString *textFieldText = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+        if (![textFieldText length] == 0) {
             [self.tags addObject:textField.text];
             [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.tags.count inSection:0]]];
             [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
@@ -153,6 +165,7 @@
 
             
         } else {
+            textField.text = @"";
             [textField resignFirstResponder];
         }
     }

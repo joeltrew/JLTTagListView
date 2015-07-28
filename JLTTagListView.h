@@ -16,6 +16,7 @@
 
 
 - (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags;
+- (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags baseColor:(UIColor *)baseColor;
 
 
 @end
