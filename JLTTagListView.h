@@ -10,12 +10,15 @@
 
 @interface JLTTagListView : UIView <UITextFieldDelegate ,UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 
-@property (nonatomic, strong) UICollectionView *collectionView;
+/* A muatble array of tags, these should be strings*/
 @property (nonatomic, strong) NSMutableArray *tags;
+
+/* A base color for the tags */
 @property (nonatomic, strong) UIColor *baseColor;
 
 
 - (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags;
+- (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags baseColor:(UIColor *)baseColor;
 
 
 @end

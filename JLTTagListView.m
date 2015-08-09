@@ -11,6 +11,12 @@
 #import "JLTAddNewTagViewCell.h"
 #import "UICollectionViewLeftAlignedLayout.h"
 
+@interface JLTTagListView ()
+
+@property (nonatomic, strong) UICollectionView *collectionView;
+
+@end
+
 
 @implementation JLTTagListView
 
@@ -21,15 +27,17 @@
     if (self) {
         
         self.backgroundColor = [UIColor clearColor];
+        
         UICollectionViewLeftAlignedLayout *layout = [[UICollectionViewLeftAlignedLayout alloc] init];
         self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 200, 200) collectionViewLayout:layout];
         self.collectionView.collectionViewLayout = layout;
+        
         self.collectionView.backgroundColor = [UIColor clearColor];
         [self.collectionView setDataSource:self];
         [self.collectionView setDelegate:self];
+        
         [self.collectionView registerClass:[JLTAddNewTagViewCell class] forCellWithReuseIdentifier:@"cellIdentifierAdd"];
         [self.collectionView registerClass:[JLTTagViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-
         self.collectionView.alwaysBounceVertical = YES;
         
         [self addSubview:self.collectionView];
@@ -49,7 +57,17 @@
     return self;
 }
 
--(void)layoutSubviews
+- (id)initWithFrame:(CGRect)frame tags:(NSMutableArray *)tags baseColor:(UIColor *)baseColor
+{
+    self = [self initWithFrame:frame];
+    if (self) {
+        self.tags = tags;
+        self.baseColor = baseColor;
+    }
+    return self;
+}
+
+- (void)layoutSubviews
 {
     [super layoutSubviews];
     self.collectionView.frame = self.bounds;
@@ -78,11 +96,17 @@
         JLTAddNewTagViewCell *cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifierAdd" forIndexPath:indexPath];
         cell.placeHolder.delegate = self;
         cell.placeHolder.tag = 100;
+        [cell.placeHolder becomeFirstResponder];
+        
+        if (self.baseColor) {
+            cell.placeHolder.tintColor = self.baseColor;
+        }
+        
         return cell;
     }
     
+    //Standard tag cell
 
-   
     JLTTagViewCell *cell  = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellIdentifier" forIndexPath:indexPath];
     
     cell.tagName.text = self.tags[indexPath.row];
@@ -98,8 +122,10 @@
     } else {
         cell.contentView.layer.backgroundColor = [[UIColor lightGrayColor]CGColor];
     }
-        cell.contentView.layer.borderColor = [UIColor colorWithWhite:0 alpha:0.1].CGColor;
+    
+    cell.contentView.layer.borderColor = [UIColor colorWithWhite:0 alpha:0.1].CGColor;
     cell.tagName.delegate = self;
+    
     return cell;
 }
 
@@ -109,10 +135,12 @@
     if (indexPath.row == self.tags.count) {
         return CGSizeMake(100, 30);
     }
+    
     NSString *labelString = [self.tags objectAtIndex:indexPath.row];
     CGRect cellWidth = [labelString boundingRectWithSize:CGSizeMake(MAXFLOAT, 20) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:16]} context:nil];
     
     CGSize cellWidthWithPadding = CGSizeMake(cellWidth.size.width+30, 30);
+    
     return cellWidthWithPadding;
 }
 
@@ -136,14 +164,25 @@
 {
     //if the user returns on an add new cell then..
     if (textField.tag == 100) {
-        if (![textField.text length] == 0) {
+        NSString *textFieldText = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+
+        if (![textFieldText length] == 0) {
+            
             [self.tags addObject:textField.text];
             [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.tags.count inSection:0]]];
             [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
             textField.text = @"";
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.tags.count inSection:0];
+            JLTAddNewTagViewCell *cell = (JLTAddNewTagViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            [cell.placeHolder becomeFirstResponder];
+
+        } else {
+            
+            textField.text = @"";
+            [textField resignFirstResponder];
         }
     }
-    [textField resignFirstResponder];
+    
     return YES;
 }
 
@@ -155,13 +194,16 @@
     UIColor *color = [UIColor colorWithHue:hue saturation:sat brightness:1 alpha:alp];
     
     for (float i = 0; i < 5; i++) {
+        
         if ([color getHue:&hue saturation:&sat brightness:&bri alpha:&alp]) {
+            
             UIColor *newColor = [UIColor colorWithHue:hue saturation:sat brightness:bri-0.06 alpha:alp];
             color = newColor;
             [colors addObject:newColor];
             
         }
     }
+    
     NSArray *colorsArray = [colors copy];
     return colorsArray;
 }
