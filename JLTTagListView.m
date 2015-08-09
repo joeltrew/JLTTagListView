@@ -102,9 +102,6 @@
             cell.placeHolder.tintColor = self.baseColor;
         }
         
-        UITextField *textField = (UITextField *)[cell viewWithTag:100];
-        [textField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.0];
-        
         return cell;
     }
     
@@ -175,6 +172,9 @@
             [self.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.tags.count inSection:0]]];
             [self.collectionView reloadItemsAtIndexPaths:[self.collectionView indexPathsForVisibleItems]];
             textField.text = @"";
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.tags.count inSection:0];
+            JLTAddNewTagViewCell *cell = (JLTAddNewTagViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            [cell.placeHolder becomeFirstResponder];
 
         } else {
             
